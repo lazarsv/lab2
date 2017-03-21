@@ -156,6 +156,10 @@ architecture rtl of top is
   signal dir_blue            : std_logic_vector(7 downto 0);
   signal dir_pixel_column    : std_logic_vector(10 downto 0);
   signal dir_pixel_row       : std_logic_vector(10 downto 0);
+  
+  signal cnt 					  : std_logic_vector(13 downto 0) := "00000000000000";
+  signal cnt2					  : std_logic_vector(19 downto 0) := "00000000000000000000";
+  
 
 begin
 
@@ -168,8 +172,11 @@ begin
   graphics_lenght <= conv_std_logic_vector(MEM_SIZE*8*8, GRAPH_MEM_ADDR_WIDTH);
   
   -- removed to inputs pin
-  direct_mode <= '1';
-  display_mode     <= "10";  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
+  --direct_mode <= '1';
+  --display_mode <= "10";  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
+  direct_mode <= '0';
+  --display_mode <= "01";
+  display_mode <= "10";
   
   font_size        <= x"1";
   show_frame       <= '1';
@@ -251,24 +258,122 @@ begin
   --dir_green
   --dir_blue
   
-  dir_red <= x"ff" when dir_pixel_column < 640/8 
-						else x"00";
+  dir_red <= x"ff" when dir_pixel_column < 640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 2*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 3*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 4*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 5*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 6*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 7*640/8 else
+				 x"00";
 		
-  dir_green <= x"ff" when dir_pixel_column < 640/8
-						else x"00";
-						
-  dir_blue <= x"ff" when dir_pixel_column < 640/8
-						else x"00";
- 
+  dir_green <= x"ff" when dir_pixel_column < 640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 2*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 3*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 4*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 5*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 6*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 7*640/8 else
+				 x"00";
+				 
+	dir_blue <= x"ff" when dir_pixel_column < 640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 2*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 3*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 4*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 5*640/8 else
+				 x"00" when dir_pixel_column >= 640/8 and dir_pixel_column < 6*640/8 else
+				 x"ff" when dir_pixel_column >= 640/8 and dir_pixel_column < 7*640/8 else
+				 x"00";
+				 
   -- koristeci signale realizovati logiku koja pise po TXT_MEM
   --char_address
   --char_value
   --char_we
   
+  char_we <= '1';
+  char_address <= cnt;
+  
+  process (pix_clock_s) begin
+		if(rising_edge(pix_clock_s))then
+			if(cnt = 1199)then
+				cnt <= (others => '0');
+			else
+				cnt <= cnt + 1;
+			end if;
+		end if;
+	end process;
+	
+  process (char_address, cnt) begin
+		if (cnt = 50) then
+			char_address <= cnt;
+			char_value <= conv_std_logic_vector (12, 6);	
+		elsif (cnt = 51) then
+			char_address <= cnt;
+			char_value <= conv_std_logic_vector (1, 6);
+		elsif (cnt = 52) then
+			char_address <= cnt;
+			char_value <= conv_std_logic_vector (11, 6);
+		elsif (cnt = 53) then
+			char_address <= cnt;
+			char_value <= conv_std_logic_vector (9, 6);
+		else 
+			char_address <= cnt;
+			char_value <= conv_std_logic_vector (32, 6); 
+		end if;
+  end process;
+  
   -- koristeci signale realizovati logiku koja pise po GRAPH_MEM
   --pixel_address
   --pixel_value
   --pixel_we
+  
+  process (pix_clock_s) begin
+		if(rising_edge(pix_clock_s))then
+			if(cnt2 = 9599)then
+				cnt2 <= (others => '0');
+			else
+				cnt2 <= cnt2 + 1;
+			end if;
+		end if;
+	end process;
+	
+	process(cnt2)begin
+		if(cnt2 = 3490)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3500)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3510)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3520)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3530)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3540)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3550)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3560)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3570)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 3590)then
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		else
+			pixel_address <= cnt2;
+			pixel_value <= x"ffffffff";
+		end if;
+	end process;
+			
   
   
 end rtl;
