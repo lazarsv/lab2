@@ -23,6 +23,8 @@ entity top is
   port (
     clk_i          : in  std_logic;
     reset_n_i      : in  std_logic;
+	 display_mode_i : in  std_logic_vector(1 downto 0);
+	 direct_mode_i  : in  std_logic; 
     -- vga
     vga_hsync_o    : out std_logic;
     vga_vsync_o    : out std_logic;
@@ -181,7 +183,7 @@ begin
   font_size        <= x"1";
   show_frame       <= '1';
   foreground_color <= x"FFFFFF";
-  background_color <= x"000000";
+  background_color <= x"FF0000";
   frame_color      <= x"FF0000";
 
   clk5m_inst : ODDR2
@@ -218,14 +220,14 @@ begin
     clk_i              => clk_i,
     reset_n_i          => reset_n_i,
     --
-    direct_mode_i      => direct_mode,
+    direct_mode_i      => direct_mode_i,
     dir_red_i          => dir_red,
     dir_green_i        => dir_green,
     dir_blue_i         => dir_blue,
     dir_pixel_column_o => dir_pixel_column,
     dir_pixel_row_o    => dir_pixel_row,
     -- cfg
-    display_mode_i     => display_mode,  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
+    display_mode_i     => display_mode_i,  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
     -- text mode interface
     text_addr_i        => char_address,
     text_data_i        => char_value,
@@ -327,6 +329,7 @@ begin
   --pixel_value
   --pixel_we
   
+  
   process (pix_clock_s) begin
 		if(rising_edge(pix_clock_s))then
 			if(cnt2 = 9599)then
@@ -336,41 +339,93 @@ begin
 			end if;
 		end if;
 	end process;
-	
+
+	pixel_we <= '1';
+	pixel_address <= cnt2;
+
 	process(cnt2)begin
-		if(cnt2 = 3490)then
-			pixel_address <= cnt2;
+		if(cnt2 = 4970)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3500)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 4990)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3510)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5010)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3520)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5030)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3530)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5050)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3540)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5070)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3550)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5090)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3560)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5110)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3570)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5130)then
 			pixel_value <= x"ffffffff";
-		elsif(cnt2 = 3590)then
-			pixel_address <= cnt2;
+		elsif(cnt2 = 5150)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5170)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5190)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5210)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5230)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5250)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5270)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5290)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5310)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5330)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5350)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5370)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5390)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5410)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5430)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5450)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5470)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5490)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5510)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5530)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5550)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5570)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5590)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5610)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5630)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5650)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5670)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5690)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5710)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5730)then
+			pixel_value <= x"ffffffff";
+		elsif(cnt2 = 5750)then
 			pixel_value <= x"ffffffff";
 		else
-			pixel_address <= cnt2;
-			pixel_value <= x"ffffffff";
+			pixel_value <= x"00000000";
 		end if;
 	end process;
 			
